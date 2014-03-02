@@ -25,13 +25,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ubikepoint.XpathPoint"
+            android:name="com.ubikepoint.Substring"
             android:label="@string/title_activity_xpath_point" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.ubikepoint.Stations"
+            android:label="@string/title_activity_station" >
+        </activity>
+        <activity
+            android:name="com.ubikepoint.TestAssets"
+            android:label="@string/title_activity_test_assets" >
         </activity>
     </application>
 

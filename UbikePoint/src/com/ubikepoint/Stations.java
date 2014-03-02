@@ -17,6 +17,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import android.util.Log;
+
 public class Stations {
 
 //	private String[] name;
@@ -29,15 +31,16 @@ public class Stations {
 	private ArrayList<HashMap<String, String>> stations = new ArrayList<HashMap<String,String>>();
 	
 	public Stations(){
-		loadFile();
+		Log.i("Ubike", "load");
+		this.stations = loadFile();
 	}
 
-	private void loadFile(){
+	private ArrayList<HashMap<String, String>> loadFile(){
 		try {
             HashMap<String, String> data = new HashMap<String, String>();
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            File file = new File("data/stations.xml");
+            File file = new File("file:///android_asset/stations.xml");
             
             if (file.exists()) {
                 Document doc = db.parse(file);
@@ -90,6 +93,8 @@ public class Stations {
                             
                         }
                         stations.add(data);
+                        Log.i("Ubike", stations.toString());
+                        return stations;
                     }
                 }
                 else {
@@ -99,9 +104,11 @@ public class Stations {
         } catch (Exception e) {
             System.out.println(e);
         }
+		return null;
 	}
 	
 	public ArrayList getStations(){
+		Log.i("Ubike", "get");
 		return stations;
 	}
 }
