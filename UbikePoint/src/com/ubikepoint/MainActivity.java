@@ -52,7 +52,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		stations = new Stations();
-		Log.i("Ubike", stations.toString());
 		result = stations.getStations();
 		
 		initViews();

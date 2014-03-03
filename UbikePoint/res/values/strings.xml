@@ -7,5 +7,6 @@
     <string name="title_activity_xpath_point">XpathPoint</string>
     <string name="title_activity_station">Station</string>
     <string name="title_activity_test_assets">TestAssets</string>
+    <string name="title_activity_test_object">TestObject</string>
 
 </resources>

@@ -7,21 +7,27 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class XpathPoint extends Activity {
 
-	//at NCCU, lat and lng are fixed
-	private static String URL_UBIKE = "http://www.youbike.com.tw/ccccc.php?lat=25.037525&lng=121.56378199999995&radius=5&mode=0";
-	//create a arraylist to store data. the type of data is hashmap. it is mean to use simpleadapter
-	private static ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
-	//layout to use
+	private TextView fa;
+	private ArrayList<HashMap<String, String>> stations = new ArrayList<HashMap<String,String>>();
 	private ListView mListView;
-	//simpleAdapter(activity, data, from, to)
 	private SimpleAdapter mSimpleAdapter;
 	
 	private static final String[] FROM = new String[]{
@@ -39,91 +45,83 @@ public class XpathPoint extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_xpath_point);
+		setContentView(R.layout.activity_main);
 		
-		loadWeb(URL_UBIKE);
+		fa = (TextView) findViewById(R.id.from_asset);
+		getAssets("stations.xml");
 		initViews();
 	}
-
+	
 	private void initViews() {
-		// TODO Auto-generated method stub
 		mListView = (ListView) findViewById(R.id.ListView_Test);
-		mSimpleAdapter = new SimpleAdapter(this, result, R.layout.list_cell, FROM, TO);
+		mSimpleAdapter = new SimpleAdapter(this, stations, R.layout.list_cell, FROM, TO);
 		mListView.setAdapter(mSimpleAdapter);
 	}
 
-	private void loadWeb(final String url) {
+	private void getAssets(String filename) {
 		// TODO Auto-generated method stub
-		new Thread(){
-			@Override
-			public void run(){
-				try{
-					URL bikeweb = new URL(url);
-					URLConnection yc = bikeweb.openConnection();
-					BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream())); //to get the resource of web
-					//call the function to read the resource and classify the data
-					ArrayList<HashMap<String, String>> data = readline(in);
-					
-				}catch(Exception e){
+		
+		try {
+			InputSource inputSrc = new InputSource(getResources().getAssets().open(filename));
+			XPath xpath = XPathFactory.newInstance().newXPath();
+			String expression = "//marker";
+			NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
+			if(nodes != null && nodes.getLength() > 0) {
+	            stations.clear();
+	            int len = nodes.getLength();
+	            for(int i = 0; i < len; ++i) {
+	                // query value
+	                Node node = nodes.item(i);
+	                
+	                if (node.getNodeType() == Node.ELEMENT_NODE) {
+	                	HashMap<String, String> data = new HashMap<String, String>();
+                        Attr name = (Attr) node.getAttributes().getNamedItem("name");  
+                        data.put("name", name.getValue());
 
-					e.printStackTrace();
-				}
-			}
-
-			private ArrayList<HashMap<String, String>> readline(BufferedReader in) {
-				// TODO Auto-generated method stub
-				String inputline = "";
-				try{
-					in.readLine(); //ignore the first line
-					while((inputline = in.readLine()).contains("address")){
-						String[] data = getString(inputline); //call the function to split the data
-						String[] column = getCol(); //call the function to create column to match the data
-						HashMap<String, String> map = new HashMap<String, String>(); //fill the HashMap with column and data
-						for(int i = 0; i<12; i++){
-							map.put(column[i], data[i]);
-						}
-						result.add(map); //fill the ArrayList with HashMap
-					}
-					in.close(); //close the bufferedReader
-				}catch(Exception e){
-					e.printStackTrace();
-				}finally{
-					
-				}
-				return result;
-			}
-
-			private String[] getCol() {
-				// TODO Auto-generated method stub
-				String[] column = {"name", "address", "nameen", "addressen", "lat", "lng", "tot", "sus", "distance", "mday", "icon_type", "qqq"};
-				return column;
-			}
-
-			private String[] getString(String inputline) {
-				// TODO Auto-generated method stub
-				String[] piece = new String[12];
-				int start = 0, end = 0;
-				for (int i = 0; i<12 ; i++){
-					if(i < 1){
-						start = inputline.indexOf("\"");
-						end = inputline.indexOf("\"", start + 1);
-						if(start == -1) return null;
-					}else{
-						start = inputline.indexOf("\"", end + 1);
-						end = inputline.indexOf("\"", start + 1);
-					}
-					piece[i] = inputline.substring(start+1, end);
-				}
-				return piece;
-			}
-		}.start();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.xpath_point, menu);
-		return true;
+                        Attr address = (Attr) node.getAttributes().getNamedItem("address");  
+                        data.put("address", address.getValue());
+                
+                        Attr nameen = (Attr) node.getAttributes().getNamedItem("address");  
+                        data.put("nameen", nameen.getValue());
+                
+	                    Attr addressen = (Attr) node.getAttributes().getNamedItem("address");  
+	                    data.put("addressen", addressen.getValue());
+	                    
+	                    Attr lat = (Attr) node.getAttributes().getNamedItem("lat");  
+	                    data.put("lat", lat.getValue());
+	                    
+	                    Attr lng = (Attr) node.getAttributes().getNamedItem("lng");  
+	                    data.put("lng", lng.getValue());
+	                    
+	                    Attr tot = (Attr) node.getAttributes().getNamedItem("tot");  
+	                    data.put("tot", tot.getValue());
+	
+	                    Attr sus = (Attr) node.getAttributes().getNamedItem("sus");  
+	                    data.put("sus", sus.getValue());
+	                    
+	                    Attr distance = (Attr) node.getAttributes().getNamedItem("distance");  
+	                    data.put("distance", distance.getValue());
+	                    
+	                    Attr mday = (Attr) node.getAttributes().getNamedItem("mday");  
+	                    data.put("mday", mday.getValue());
+	                    
+	                    Attr icon_type = (Attr) node.getAttributes().getNamedItem("icon_type");  
+	                    data.put("icon_type", icon_type.getValue());
+	                    
+	                    Attr qqq = (Attr) node.getAttributes().getNamedItem("qqq");  
+	                    data.put("qqq", qqq.getValue());
+	                    stations.add(data);
+	                }
+	            }
+	        }
+//            InputStream in = getResources().getAssets().open(filename);
+//            int lenght = in.available();
+//            byte[]  buffer = new byte[lenght];
+//            in.read(buffer);  
+//            result = EncodingUtils.getString(buffer, "UTF-8");  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }
 	}
 
 }
