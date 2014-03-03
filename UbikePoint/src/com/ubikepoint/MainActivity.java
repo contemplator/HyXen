@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
 	private ListView mListView;
 	//simpleAdapter(activity, data, from, to)
 	private SimpleAdapter mSimpleAdapter;
-	private Stations stations;
+	private ObjectTest stations;
 	
 	private static final String[] FROM = new String[]{
 		"name",
@@ -51,7 +51,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		stations = new Stations();
+		stations = new ObjectTest();
+		stations.setStations();
 		result = stations.getStations();
 		
 		initViews();
