@@ -32,7 +32,8 @@ public class MainActivity extends Activity {
 	private ListView mListView;
 	//simpleAdapter(activity, data, from, to)
 	private SimpleAdapter mSimpleAdapter;
-	private ObjectTest stations;
+//	private ObjectTest stations;
+	private Stations stations;
 	
 	private static final String[] FROM = new String[]{
 		"name",
@@ -45,14 +46,16 @@ public class MainActivity extends Activity {
 		R.id.Text_Tot,
 		R.id.Text_Sus
 	};
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		stations = new ObjectTest();
-		stations.setStations();
+//		stations = new ObjectTest();
+//		stations.setStations();
+		stations = new Stations(getApplicationContext());
 		result = stations.getStations();
 		
 		initViews();

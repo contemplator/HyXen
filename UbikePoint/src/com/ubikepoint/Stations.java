@@ -11,15 +11,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import android.app.Activity;
-import android.util.Log;
+import android.content.Context;
 
-public class Stations extends Activity {
+public class Stations{
 	
 	private ArrayList<HashMap<String, String>> stations = new ArrayList<HashMap<String,String>>();
+	private Context context;
 	
-	public Stations(){
+	public Stations(Context con){
 		super();
+		this.context = con;
 		getAssets("stations.xml");
 	}
 
@@ -27,7 +28,7 @@ public class Stations extends Activity {
 		// TODO Auto-generated method stub
 		
 		try {
-			InputSource inputSrc = new InputSource(getResources().getAssets().open(filename));
+			InputSource inputSrc = new InputSource(context.getResources().getAssets().open(filename));
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			String expression = "//marker";
 			NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
@@ -90,7 +91,6 @@ public class Stations extends Activity {
 	}
 	
 	public ArrayList getStations(){
-		Log.i("Ubike", "get");
 		return stations;
 	}
 }

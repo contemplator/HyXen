@@ -37,10 +37,6 @@
             android:label="@string/title_activity_test_assets" >
         </activity>
         <activity
-            android:name="com.ubikepoint.TestObject"
-            android:label="@string/title_activity_test_object" >
-        </activity>
-        <activity
             android:name="com.ubikepoint.XpathPoint"
             android:label="@string/title_activity_xpath_point" >
         </activity>
