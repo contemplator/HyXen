@@ -18,7 +18,11 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -34,6 +38,7 @@ public class MainActivity extends Activity {
 	private SimpleAdapter mSimpleAdapter;
 //	private ObjectTest stations;
 	private Stations stations;
+	private Button ubike_point;
 	
 	private static final String[] FROM = new String[]{
 		"name",
@@ -62,6 +67,17 @@ public class MainActivity extends Activity {
 	}
 	
 	private void initViews() {
+		ubike_point = (Button) findViewById(R.id.ubike_point);
+		ubike_point.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, UBikePoint.class);
+				startActivity(intent);
+			}
+		});
+		
 		mListView = (ListView) findViewById(R.id.ListView_Test);
 		mSimpleAdapter = new SimpleAdapter(this, result, R.layout.list_cell, FROM, TO);
 		mListView.setAdapter(mSimpleAdapter);

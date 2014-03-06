@@ -9,5 +9,6 @@
     <string name="title_activity_test_assets">TestAssets</string>
     <string name="title_activity_test_object">TestObject</string>
     <string name="title_activity_object_test">ObjectTest</string>
+    <string name="title_activity_ubike_point">UBikePoint</string>
 
 </resources>

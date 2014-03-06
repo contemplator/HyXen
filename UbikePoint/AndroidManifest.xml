@@ -44,6 +44,10 @@
             android:name="com.ubikepoint.ObjectTest"
             android:label="@string/title_activity_object_test" >
         </activity>
+        <activity
+            android:name="com.ubikepoint.UBikePoint"
+            android:label="@string/title_activity_ubike_point" >
+        </activity>
     </application>
 
 </manifest>
