@@ -9,17 +9,23 @@
     tools:context=".MainActivity" >
     
     <Button
-        android:id="@+id/ubike_point"
+        android:id="@+id/ubike_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="顯示UBike站點" >
-    </Button>
+        android:text="顯示UBike列表" />
+    
+    <Button
+        android:id="@+id/ubike_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ubike_list"
+        android:text="顯示UBike地圖" />
     
     <ListView
         android:id="@+id/ListView_Test"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ubike_point" >
+        android:layout_below="@id/ubike_map" >
     </ListView>
 
 </RelativeLayout>

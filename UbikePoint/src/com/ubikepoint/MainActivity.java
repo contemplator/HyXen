@@ -1,25 +1,13 @@
 package com.ubikepoint;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.HttpStatus;
-import org.json.JSONObject;
 
 //import com.adapter.R;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,7 +26,8 @@ public class MainActivity extends Activity {
 	private SimpleAdapter mSimpleAdapter;
 //	private ObjectTest stations;
 	private Stations stations;
-	private Button ubike_point;
+	private Button ubike_list;
+	private Button ubike_map;
 	
 	private static final String[] FROM = new String[]{
 		"name",
@@ -67,9 +56,19 @@ public class MainActivity extends Activity {
 	}
 	
 	private void initViews() {
-		ubike_point = (Button) findViewById(R.id.ubike_point);
-		ubike_point.setOnClickListener(new OnClickListener() {
+		ubike_list = (Button) findViewById(R.id.ubike_list);
+		ubike_list.setOnClickListener(new OnClickListener() {
 			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, UBikePoint.class);
+				startActivity(intent);
+			}
+		});
+		
+		ubike_map = (Button) findViewById(R.id.ubike_map);
+		ubike_map.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
