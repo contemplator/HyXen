@@ -12,7 +12,7 @@ import android.widget.SimpleAdapter;
 import android.app.Activity;
 import android.content.Intent;
 
-public class UBikePoint extends Activity {
+public class UBikeList extends Activity {
 	
 	private static ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
 	//layout to use
@@ -37,7 +37,7 @@ public class UBikePoint extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ubike_point);
+		setContentView(R.layout.activity_ubike_list);
 		
 		stations = new Stations(getApplicationContext());
 		result = stations.getStations();

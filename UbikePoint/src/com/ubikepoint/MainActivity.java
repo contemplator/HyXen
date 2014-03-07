@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(MainActivity.this, UBikePoint.class);
+				Intent intent = new Intent(MainActivity.this, UBikeList.class);
 				startActivity(intent);
 			}
 		});
@@ -72,78 +72,10 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(MainActivity.this, UBikePoint.class);
+				Intent intent = new Intent(MainActivity.this, UBikeMap.class);
 				startActivity(intent);
 			}
 		});
-		
-		mListView = (ListView) findViewById(R.id.ListView_Test);
-		mSimpleAdapter = new SimpleAdapter(this, result, R.layout.list_cell, FROM, TO);
-		mListView.setAdapter(mSimpleAdapter);
 	}
-	
-//	private void loadWeb(final String url){
-//		new Thread(){
-//			@Override
-//			public void run(){
-//				try{
-//					URL bikeweb = new URL(url);
-//					URLConnection yc = bikeweb.openConnection();
-//					BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream())); //to get the resource of web
-//					//call the function to read the resource and classify the data
-//					ArrayList<HashMap<String, String>> data = readline(in);
-//					
-//				}catch(Exception e){
-//
-//					e.printStackTrace();
-//				}
-//			}
-//		}.start();
-//	}
-//	
-//	private static ArrayList<HashMap<String, String>> readline(BufferedReader in) {
-//		// TODO Auto-generated method stub
-//		String inputline = "";
-//		try{
-//			in.readLine(); //ignore the first line
-//			while((inputline = in.readLine()).contains("address")){
-//				String[] data = subString(inputline); //call the function to split the data
-//				String[] column = getCol(); //call the function to create column to match the data
-//				HashMap<String, String> map = new HashMap<String, String>(); //fill the HashMap with column and data
-//				for(int i = 0; i<12; i++){
-//					map.put(column[i], data[i]);
-//				}
-//				result.add(map); //fill the ArrayList with HashMap
-//			}
-//			in.close(); //close the bufferedReader
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}finally{
-//			
-//		}
-//		return result;
-//	}
-//	
-//	protected static String[] subString(String inputline){
-//		String[] piece = new String[12];
-//		int start = 0, end = 0;
-//		for (int i = 0; i<12 ; i++){
-//			if(i < 1){
-//				start = inputline.indexOf("\"");
-//				end = inputline.indexOf("\"", start + 1);
-//				if(start == -1) return null;
-//			}else{
-//				start = inputline.indexOf("\"", end + 1);
-//				end = inputline.indexOf("\"", start + 1);
-//			}
-//			piece[i] = inputline.substring(start+1, end);
-//		}
-//		return piece;
-//	}
-//
-//	protected static String[] getCol(){
-//		String[] column = {"name", "address", "nameen", "addressen", "lat", "lng", "tot", "sus", "distance", "mday", "icon_type", "qqq"};
-//		return column;
-//	}
 	
 }
