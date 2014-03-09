@@ -43,14 +43,16 @@ public class UBikeList extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ubike_list);
 		
-		Intent it = getIntent();
-		String stations = it.getStringExtra("stations");
-		try {
-			data = new JSONArray(stations);
-			toHashMap();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(result.size() <= 0){
+			Intent it = getIntent();
+			stations = it.getStringExtra("stations");
+			try {
+				data = new JSONArray(stations);
+				toHashMap();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 //		stations = new Stations(getApplicationContext());
 //		result = stations.getStations();
@@ -65,14 +67,16 @@ public class UBikeList extends Activity {
 	}
 	
 	private void toHashMap() throws JSONException{
-		HashMap<String, String> station = new HashMap<String, String>();
-		for(int i=0; i<data.length(); i++){
+		
+		for(int i = 0; i<data.length(); i++){
+			HashMap<String, String> station = new HashMap<String, String>();
 			JSONObject s = data.getJSONObject(i);
 			station.put("name", s.getString("name"));
 			station.put("tot", s.getString("tot"));
 			station.put("sus", s.getString("sus"));
 			result.add(station);
 		}
+		
 	}
 
 }

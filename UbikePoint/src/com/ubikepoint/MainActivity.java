@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
 			data = new Stations(getApplicationContext());
 			result = data.getStations();
 			savePreferences();
+			readPreferences();
 		}
 		initViews();
 		
@@ -72,6 +73,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(MainActivity.this, UBikeMap.class);
+				intent.putExtra("stations", stations);
 				startActivity(intent);
 			}
 		});

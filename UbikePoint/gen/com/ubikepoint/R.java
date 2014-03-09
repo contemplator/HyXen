@@ -251,8 +251,9 @@ containing a value of this type.
         public static final int activity_ubike_json=0x7f030005;
         public static final int activity_ubike_list=0x7f030006;
         public static final int activity_ubike_map=0x7f030007;
-        public static final int activity_xpath_point=0x7f030008;
-        public static final int list_cell=0x7f030009;
+        public static final int activity_ubike_point=0x7f030008;
+        public static final int activity_xpath_point=0x7f030009;
+        public static final int list_cell=0x7f03000a;
     }
     public static final class menu {
         public static final int main=0x7f0b0000;
