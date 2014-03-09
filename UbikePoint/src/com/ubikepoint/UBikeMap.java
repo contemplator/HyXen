@@ -1,13 +1,14 @@
 package com.ubikepoint;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.app.Activity;
+import android.support.v4.app.FragmentManager;
 
 public class UBikeMap extends FragmentActivity {
 
@@ -29,15 +30,21 @@ public class UBikeMap extends FragmentActivity {
 	
 	//when i change the minSdkVersion to 11, i can use the mapFragment. And i don't meet the problem of thread. 
 	private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
+//        if (mMap == null) {
+//            // Try to obtain the map from the SupportMapFragment.
+//            mMap = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
+//            // Check if we were successful in obtaining the map.
+//            if (mMap != null) {
+//                setUpMap();
+//            }
+//        }
+        
+        FragmentManager fmanager = getSupportFragmentManager();
+        Fragment fragment = fmanager.findFragmentById(R.id.map);
+        SupportMapFragment supportmapfragment = (SupportMapFragment)fragment;
+        mMap = supportmapfragment.getMap();
+        
+        setUpMap();
     }
 	
 	private void setUpMap() {

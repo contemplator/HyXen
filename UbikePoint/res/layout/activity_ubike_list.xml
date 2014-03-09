@@ -12,7 +12,6 @@
         android:id="@+id/ListView_Test"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ubike_list" >
-    </ListView>
+        android:layout_below="@id/ubike_list" />
 
 </RelativeLayout>

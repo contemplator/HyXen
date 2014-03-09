@@ -221,18 +221,21 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f02001c;
     }
     public static final class id {
-        public static final int ListView_Test=0x7f060008;
-        public static final int Text_Name=0x7f06000a;
-        public static final int Text_Sus=0x7f06000c;
-        public static final int Text_Tot=0x7f06000b;
-        public static final int action_settings=0x7f06000d;
-        public static final int from_asset=0x7f060007;
+        public static final int ListView_Test=0x7f06000b;
+        public static final int Text_Name=0x7f06000d;
+        public static final int Text_Sus=0x7f06000f;
+        public static final int Text_Tot=0x7f06000e;
+        public static final int action_settings=0x7f060010;
+        public static final int from_asset=0x7f060009;
         public static final int hybrid=0x7f060004;
-        public static final int map=0x7f060009;
+        public static final int json_text=0x7f06000a;
+        public static final int map=0x7f06000c;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
         public static final int satellite=0x7f060002;
         public static final int terrain=0x7f060003;
+        public static final int text_test=0x7f060008;
+        public static final int ubike_json=0x7f060007;
         public static final int ubike_list=0x7f060005;
         public static final int ubike_map=0x7f060006;
     }
@@ -245,10 +248,11 @@ containing a value of this type.
         public static final int activity_station=0x7f030002;
         public static final int activity_test_assets=0x7f030003;
         public static final int activity_test_object=0x7f030004;
-        public static final int activity_ubike_list=0x7f030005;
-        public static final int activity_ubike_map=0x7f030006;
-        public static final int activity_xpath_point=0x7f030007;
-        public static final int list_cell=0x7f030008;
+        public static final int activity_ubike_json=0x7f030005;
+        public static final int activity_ubike_list=0x7f030006;
+        public static final int activity_ubike_map=0x7f030007;
+        public static final int activity_xpath_point=0x7f030008;
+        public static final int list_cell=0x7f030009;
     }
     public static final class menu {
         public static final int main=0x7f0b0000;
@@ -365,8 +369,9 @@ containing a value of this type.
         public static final int title_activity_station=0x7f07001e;
         public static final int title_activity_test_assets=0x7f07001f;
         public static final int title_activity_test_object=0x7f070020;
+        public static final int title_activity_ubike_json=0x7f070024;
+        public static final int title_activity_ubike_list=0x7f070022;
         public static final int title_activity_ubike_map=0x7f070023;
-        public static final int title_activity_ubike_point=0x7f070022;
         public static final int title_activity_xpath_point=0x7f07001d;
     }
     public static final class style {

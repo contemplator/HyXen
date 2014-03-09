@@ -6,6 +6,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -92,5 +94,19 @@ public class Stations{
 	
 	public ArrayList getStations(){
 		return stations;
+	}
+	
+	public JSONArray getJson(){
+		JSONArray stations_json = new JSONArray();
+		int length = stations.size();
+		for (int i=0; i<length; i++){
+			JSONObject station_json = new JSONObject(stations.get(i));
+			stations_json.put(station_json);
+		}
+		return stations_json;
+	}
+	
+	public int getSize(){
+		return stations.size();
 	}
 }
