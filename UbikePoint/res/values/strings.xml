@@ -11,6 +11,7 @@
     <string name="title_activity_object_test">ObjectTest</string>
     <string name="title_activity_ubike_list">UBikeList</string>
     <string name="title_activity_ubike_map">UBikeMap</string>
+    <string name="title_activity_ubike_map2">UBikeMap2</string>
     <string name="title_activity_ubike_json">UBikeJson</string>
 
 </resources>

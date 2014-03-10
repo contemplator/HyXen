@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
 	private Stations data;
 	private Button ubike_list;
 	private Button ubike_map;
+	private Button ubike_map2;
 	private Button ubike_json;
 	private TextView text_test;
 	
@@ -111,6 +112,16 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(MainActivity.this, UBikeMap.class);
 				intent.putExtra("stations", stations);
+				startActivity(intent);
+			}
+		});
+		
+		ubike_map2 = (Button) findViewById(R.id.ubike_map2);
+		ubike_map2.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, UBikeMap2.class);
 				startActivity(intent);
 			}
 		});

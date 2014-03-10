@@ -71,6 +71,10 @@
             android:label="@string/title_activity_ubike_map" >
         </activity>
         <activity
+            android:name="com.ubikepoint.UBikeMap2"
+            android:label="@string/title_activity_ubike_map2" >
+        </activity>
+        <activity
             android:name="com.ubikepoint.UBikeJson"
             android:label="@string/title_activity_ubike_json" >
         </activity>
