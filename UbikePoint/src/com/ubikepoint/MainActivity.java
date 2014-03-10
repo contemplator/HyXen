@@ -5,8 +5,11 @@ import java.util.HashMap;
 
 //import com.adapter.R;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -43,6 +46,8 @@ public class MainActivity extends Activity {
 		sp = getSharedPreferences("stations", MODE_PRIVATE);
 		editor = sp.edit();
 		
+		checkNetwork();
+		
 		readPreferences();
 		if(stations == "no data"){
 			data = new Stations(getApplicationContext());
@@ -54,6 +59,38 @@ public class MainActivity extends Activity {
 		
 	}
 	
+	@SuppressWarnings("null")
+	private void checkNetwork() {
+		// TODO Auto-generated method stub
+		ConnectivityManager conManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = conManager.getNetworkInfo(1); //WIFI
+		NetworkInfo mobNetInfo = conManager.getNetworkInfo(0); //3G
+		if (networkInfo != null && networkInfo.isConnected()){
+			new AlertDialog.Builder(MainActivity.this)
+			.setMessage("有WIFI:")
+			.show();
+		}
+		if (mobNetInfo != null && mobNetInfo.isConnected()){
+			new AlertDialog.Builder(MainActivity.this)
+			.setMessage("有3G:")
+			.show();
+		}
+		else{
+			new AlertDialog.Builder(MainActivity.this)
+			.setMessage("沒網路")
+			.show();
+		}
+//		if (networkInfo == null || !networkInfo.isAvailable()){
+//			new AlertDialog.Builder(MainActivity.this)
+//			.setMessage("沒網路")
+//			.show();
+//		}else{
+//			new AlertDialog.Builder(MainActivity.this)
+//			.setMessage("有網路")
+//			.show();
+//		}
+	}
+
 	private void initViews() {
 		ubike_list = (Button) findViewById(R.id.ubike_list);
 		ubike_list.setOnClickListener(new OnClickListener() {

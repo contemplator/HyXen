@@ -75,15 +75,15 @@ public class UBikeMap extends FragmentActivity {
 				float lng = Float.parseFloat(s.getString("lng"));
 				if(Integer.parseInt(s.getString("tot")) <= 10){
 					mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(s.getString("name"))
-							.snippet("¥i­É¨®½ø:" + s.getString("tot") + "\n" + "¥i°±¦ì¸m:" + s.getString("sus"))
+							.snippet("å‰©é¤˜è»Šè¼›:" + s.getString("tot") + "\n" + "å‰©é¤˜è»Šä½:" + s.getString("sus"))
 							.icon(BitmapDescriptorFactory.defaultMarker(0)));
 				}else if(Integer.parseInt(s.getString("tot")) <= 20 && Integer.parseInt(s.getString("tot")) > 10){
 					mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(s.getString("name"))
-							.snippet("¥i­É¨®½ø:" + s.getString("tot") + "\n" + "¥i°±¦ì¸m:" + s.getString("sus"))
+							.snippet("å‰©é¤˜è»Šè¼›:" + s.getString("tot") + "\n" + "å‰©é¤˜è»Šä½:" + s.getString("sus"))
 							.icon(BitmapDescriptorFactory.defaultMarker(50)));
 				}else{
 					mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title(s.getString("name"))
-							.snippet("¥i­É¨®½ø:" + s.getString("tot") + "\n" + "¥i°±¦ì¸m:" + s.getString("sus"))
+							.snippet("å‰©é¤˜è»Šè¼›:" + s.getString("tot") + "\n" + "å‰©é¤˜è»Šä½:" + s.getString("sus"))
 							.icon(BitmapDescriptorFactory.defaultMarker(100)));
 				}
 				
