@@ -1,7 +1,20 @@
 package com.ubikepoint;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import org.json.JSONArray;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 //import com.adapter.R;
 
@@ -47,13 +60,15 @@ public class MainActivity extends Activity {
 		
 		checkNetwork();
 		
-		readPreferences();
-		if(stations == "no data"){
-			data = new Stations(getApplicationContext());
-			result = data.getStations();
-			savePreferences();
-			readPreferences();
-		}
+//		readPreferences();
+//		if(stations == "no data"){
+//			data = new Stations(getApplicationContext());
+//			result = data.getStations();
+//			savePreferences();
+//			readPreferences();
+//		}
+		loadweb();
+		
 		initViews();
 		
 	}
@@ -73,15 +88,6 @@ public class MainActivity extends Activity {
 		else{
 			Toast.makeText(this, "沒網路", Toast.LENGTH_SHORT).show();
 		}
-//		if (networkInfo == null || !networkInfo.isAvailable()){
-//			new AlertDialog.Builder(MainActivity.this)
-//			.setMessage("沒網路")
-//			.show();
-//		}else{
-//			new AlertDialog.Builder(MainActivity.this)
-//			.setMessage("有網路")
-//			.show();
-//		}
 	}
 
 	private void initViews() {
@@ -141,7 +147,7 @@ public class MainActivity extends Activity {
 		});
 		
 		text_test = (TextView) findViewById(R.id.text_test);
-		text_test.setText(stations);
+//		text_test.setText(stations);
 	}
 	
 	private void savePreferences(){
@@ -155,4 +161,67 @@ public class MainActivity extends Activity {
 		stations = sp.getString("stations", "no data");
 	}
 	
+	private static ArrayList<Station> data2 = new ArrayList<Station>();
+	private void loadweb() {
+		// TODO Auto-generated method stub
+		new Thread(){
+			@Override
+			public void run(){
+				try{
+					URL bikeweb = new URL("http://www.youbike.com.tw/ccccc.php");
+					BufferedReader in = new BufferedReader(new InputStreamReader(bikeweb.openStream()));
+					InputSource input = new InputSource(in);
+					
+					XPath xpath = XPathFactory.newInstance().newXPath();
+					String expression = "//marker";
+					NodeList nodeList = (NodeList)xpath.evaluate(expression, input, XPathConstants.NODESET);
+					
+					for(int i=0; i<nodeList.getLength(); i++){
+						Node node = nodeList.item(i);
+						
+						Attr name = (Attr) node.getAttributes().getNamedItem("name");
+						Attr address = (Attr) node.getAttributes().getNamedItem("address");
+						Attr tot = (Attr) node.getAttributes().getNamedItem("tot");
+						Attr sus = (Attr) node.getAttributes().getNamedItem("sus");
+						Attr lat = (Attr) node.getAttributes().getNamedItem("lat");
+						Attr lng = (Attr) node.getAttributes().getNamedItem("lng");
+						Attr mDay = (Attr) node.getAttributes().getNamedItem("mday");
+						String n = name.getValue();
+						String a = address.getValue();
+						int t = Integer.parseInt(tot.getValue());
+						int s = Integer.parseInt(sus.getValue());
+						float la = Float.parseFloat(lat.getValue());
+						float ln = Float.parseFloat(lng.getValue());
+						String m = mDay.getValue();
+						Station station = new Station(n, a, t, s, la, ln, m);
+						data2.add(station);
+					}
+					in.close();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				text_test.post(new Runnable(){
+					@Override
+					public void run() {
+						text_test.setText(data2.get(0).getMday());
+					}
+				});
+				getString();
+			}
+		}.start();
+	}
+	
+	private void getString(){
+		new Thread(){
+			@Override
+			public void run(){
+				JSONArray data3 = new JSONArray();
+				for(int i=0; i<data2.size(); i++){
+					data3.put(data2.get(i));
+				}
+				stations = data3.toString();
+			}
+		}.start();
+	};
 }

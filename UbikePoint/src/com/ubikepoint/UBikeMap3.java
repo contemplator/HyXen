@@ -9,6 +9,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.json.JSONObject;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -44,6 +45,25 @@ public class UBikeMap3 extends FragmentActivity{
         setUpMapIfNeeded();
 	}
 	
+	private void initView() {
+		
+		list = (Button) findViewById(R.id.list);
+		list.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+			}
+		});
+		
+		update = (Button) findViewById(R.id.update);
+		update.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+			}
+		});
+		
+		datetime = (TextView) findViewById(R.id.datetime);
+	}
+	
 	private void loadweb() {
 		// TODO Auto-generated method stub
 		new Thread(){
@@ -67,45 +87,30 @@ public class UBikeMap3 extends FragmentActivity{
 						Attr sus = (Attr) node.getAttributes().getNamedItem("sus");
 						Attr lat = (Attr) node.getAttributes().getNamedItem("lat");
 						Attr lng = (Attr) node.getAttributes().getNamedItem("lng");
+						Attr mDay = (Attr) node.getAttributes().getNamedItem("mday");
 						String n = name.getValue();
 						String a = address.getValue();
 						int t = Integer.parseInt(tot.getValue());
 						int s = Integer.parseInt(sus.getValue());
 						float la = Float.parseFloat(lat.getValue());
 						float ln = Float.parseFloat(lng.getValue());
-						Station station = new Station(n, a, t, s, la, ln);
+						String m = mDay.getValue();
+						Station station = new Station(n, a, t, s, la, ln, m);
 						data.add(station);
 					}
 					in.close();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
+				
+				datetime.post(new Runnable(){
+					@Override
+					public void run() {
+						datetime.setText(data.get(0).getMday());
+					}
+				});
 			}
-			datetime.post(new new Runnable() {
-				public void run() {
-					datetime.setText(data.get(1).getMday());
-				}
-			});
 		}.start();
-	}
-
-	private void initView() {
-		
-		list = (Button) findViewById(R.id.list);
-		list.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-			}
-		});
-		
-		update = (Button) findViewById(R.id.update);
-		update.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-			}
-		});
-		
-		datetime = (TextView) findViewById(R.id.datetime);
 	}
 	
 	private void setUpMapIfNeeded() {
@@ -123,6 +128,14 @@ public class UBikeMap3 extends FragmentActivity{
 		// TODO Auto-generated method stub
 		mMap.setMyLocationEnabled(true);
 		
-		
+//		setMarker();
 	}
+
+//	private void setMarker() {
+//		// TODO Auto-generated method stub
+//		for(int i=0; i<data.size(); i++){
+//			JSONObject j = new JSONObject(data.get(i));
+//			
+//		}
+//	}
 }

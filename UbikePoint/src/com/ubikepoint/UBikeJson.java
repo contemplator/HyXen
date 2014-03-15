@@ -44,9 +44,9 @@ public class UBikeJson extends Activity {
 		setContentView(R.layout.activity_ubike_json);
 		
 		checkNetwork();
-//		if(network == true){
+		if(network == true){
 			loadweb();
-//		}
+		}
 		initViews();
 	}
 
@@ -108,15 +108,16 @@ public class UBikeJson extends Activity {
 						Attr sus = (Attr) node.getAttributes().getNamedItem("sus");
 						Attr lat = (Attr) node.getAttributes().getNamedItem("lat");
 						Attr lng = (Attr) node.getAttributes().getNamedItem("lng");
-						Attr mDay = (Attr) node.getAttributes().getNamedItem("lng");
+						Attr mDay = (Attr) node.getAttributes().getNamedItem("mday");
 						String n = name.getValue();
 						String a = address.getValue();
 						int t = Integer.parseInt(tot.getValue());
 						int s = Integer.parseInt(sus.getValue());
 						float la = Float.parseFloat(lat.getValue());
 						float ln = Float.parseFloat(lng.getValue());
+						String m = mDay.getValue();
 						
-						Station station = new Station(n, a, t, s, la, ln);
+						Station station = new Station(n, a, t, s, la, ln, m);
 						data.add(station);
 					}
 					in.close();
