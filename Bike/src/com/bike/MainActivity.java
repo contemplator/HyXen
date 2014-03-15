@@ -1,7 +1,8 @@
-package com.ubikepoint;
+package com.bike;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -9,9 +10,6 @@ import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 
 import org.json.JSONArray;
 import org.w3c.dom.Attr;
@@ -19,40 +17,45 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.R.integer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.app.Activity;
+import android.app.AlertDialog;
 
-public class UBikeJson extends Activity {
-	
+public class MainActivity extends Activity {
+
 	private boolean network = true;
 	private String stations;
-	private static ArrayList<Station> data = new ArrayList<Station>();
-	private static JSONArray dataJson = new JSONArray();
+	private ArrayList<Station> data = new ArrayList<Station>();
+	private JSONArray dataJson = new JSONArray();
 	
-	private TextView json_text;
+	private TextView test;
 	
-//	private Handler mHandler = new Handler();
+//	private Station tests= new Station("name", "address", 123, 123, 123, 123);
+	private String tests = "Ssd";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ubike_json);
+		setContentView(R.layout.activity_main);
 		
-		checkNetwork();
+//		checkNetwork();
 //		if(network == true){
 			loadweb();
+			getJsonArray();
 //		}
-		initViews();
+		
+		initView();
 	}
 
-	private void initViews() {
+	private void initView() {
 		// TODO Auto-generated method stub
-		json_text = (TextView) findViewById(R.id.json_text);
+		test = (TextView) findViewById(R.id.test);
+//		test.setText(data.toString());
+		test.setText(tests);
 	}
 
 	private void checkNetwork() {
@@ -61,15 +64,21 @@ public class UBikeJson extends Activity {
 		NetworkInfo networkInfo = conManager.getNetworkInfo(1); //WIFI
 		NetworkInfo mobNetInfo = conManager.getNetworkInfo(0); //3G
 		if (networkInfo != null && networkInfo.isConnected()){
-			Toast.makeText(this, "有WIFI", Toast.LENGTH_SHORT).show();
+			new AlertDialog.Builder(MainActivity.this)
+			.setMessage("有WIFI:")
+			.show();
 			network = true;
 		}
 		if (mobNetInfo != null && mobNetInfo.isConnected()){
-			Toast.makeText(this, "有3G", Toast.LENGTH_SHORT).show();
+			new AlertDialog.Builder(MainActivity.this)
+			.setMessage("有3G:")
+			.show();
 			network = true;
 		}
 		else{
-			Toast.makeText(this, "沒網路", Toast.LENGTH_SHORT).show();
+			new AlertDialog.Builder(MainActivity.this)
+			.setMessage("沒網路")
+			.show();
 			network = false;
 		}
 	}
@@ -81,25 +90,22 @@ public class UBikeJson extends Activity {
 			@Override
 			public void run() {
 				try{
-//					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//		            DocumentBuilder builder = factory.newDocumentBuilder();
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		            DocumentBuilder builder = factory.newDocumentBuilder();
 		            
 		            URL bikeweb = new URL("http://www.youbike.com.tw/ccccc.php");
-//					URLConnection yc = bikeweb.openConnection();
-					BufferedReader in = new BufferedReader(new InputStreamReader(bikeweb.openStream()));
-					InputSource input = new InputSource(in);
+					URLConnection yc = bikeweb.openConnection();
+					BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
 					
-					XPath xpath = XPathFactory.newInstance().newXPath();
-					String expression = "//marker";
-					NodeList nodeList = (NodeList)xpath.evaluate(expression, input, XPathConstants.NODESET);
+					InputSource input = new InputSource(in);
+					tests = in.toString();
 //					while(in.readLine() != null){
 //						tests += in.readLine();
 //					}
-//					org.w3c.dom.Document doc = builder.parse(input);
-//					NodeList nodeList = doc.getElementsByTagName("marker");
+					org.w3c.dom.Document doc = builder.parse(input);
+					NodeList nodeList = doc.getElementsByTagName("marker");
 					
 					for(int i=0; i<nodeList.getLength(); i++){
-//						Node node = nodes.item(i);
 						Node node = nodeList.item(i);
 						
 						Attr name = (Attr) node.getAttributes().getNamedItem("name");
@@ -108,7 +114,6 @@ public class UBikeJson extends Activity {
 						Attr sus = (Attr) node.getAttributes().getNamedItem("sus");
 						Attr lat = (Attr) node.getAttributes().getNamedItem("lat");
 						Attr lng = (Attr) node.getAttributes().getNamedItem("lng");
-						Attr mDay = (Attr) node.getAttributes().getNamedItem("lng");
 						String n = name.getValue();
 						String a = address.getValue();
 						int t = Integer.parseInt(tot.getValue());
@@ -120,21 +125,9 @@ public class UBikeJson extends Activity {
 						data.add(station);
 					}
 					in.close();
-					
-					
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-				
-//				mHandler.post(new Runnable() {
-				json_text.post(new Runnable(){
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						getJsonArray();
-						json_text.setText(dataJson.toString());
-					}
-				});
 			}
 		}.start();
 	}

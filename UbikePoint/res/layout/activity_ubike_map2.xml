@@ -16,6 +16,7 @@
 		    android:layout_weight="0.6"
 		    android:text="最後更新時間："/>
         <Button
+            android:id="@+id/update"
           	android:layout_width="wrap_content"
           	android:layout_height="wrap_content"
           	android:layout_weight="0.4"

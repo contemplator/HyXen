@@ -9,22 +9,19 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/*create the list to select function to test
+We grab the data of ubike point from Official Website,stores the data in the ArrayList result, and save the data in SharePreference sp.
+Before we new the stations data, we will read the sp.*/
 public class MainActivity extends Activity {
 	
-	//at NCCU, lat and lng are fixed
-	//private static String URL_UBIKE = "http://www.youbike.com.tw/ccccc.php?lat=25.037525&lng=121.56378199999995&radius=5&mode=0";
-	//create a arraylist to store data. the type of data is hashmap. it is mean to use simpleadapter
 	private static ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
 	
 	private String stations = null;
@@ -32,6 +29,7 @@ public class MainActivity extends Activity {
 	private Button ubike_list;
 	private Button ubike_map;
 	private Button ubike_map2;
+	private Button ubike_map3;
 	private Button ubike_json;
 	private TextView text_test;
 	
@@ -67,19 +65,13 @@ public class MainActivity extends Activity {
 		NetworkInfo networkInfo = conManager.getNetworkInfo(1); //WIFI
 		NetworkInfo mobNetInfo = conManager.getNetworkInfo(0); //3G
 		if (networkInfo != null && networkInfo.isConnected()){
-			new AlertDialog.Builder(MainActivity.this)
-			.setMessage("有WIFI:")
-			.show();
+			Toast.makeText(this, "有WIFI", Toast.LENGTH_SHORT).show();
 		}
 		if (mobNetInfo != null && mobNetInfo.isConnected()){
-			new AlertDialog.Builder(MainActivity.this)
-			.setMessage("有3G:")
-			.show();
+			Toast.makeText(this, "有3G", Toast.LENGTH_SHORT).show();
 		}
 		else{
-			new AlertDialog.Builder(MainActivity.this)
-			.setMessage("沒網路")
-			.show();
+			Toast.makeText(this, "沒網路", Toast.LENGTH_SHORT).show();
 		}
 //		if (networkInfo == null || !networkInfo.isAvailable()){
 //			new AlertDialog.Builder(MainActivity.this)
@@ -122,6 +114,18 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(MainActivity.this, UBikeMap2.class);
+				intent.putExtra("stations", stations);
+				startActivity(intent);
+			}
+		});
+		
+		ubike_map3 = (Button) findViewById(R.id.ubike_map3);
+		ubike_map3.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, UBikeMap3.class);
+				intent.putExtra("stations", stations);
 				startActivity(intent);
 			}
 		});

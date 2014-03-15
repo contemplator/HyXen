@@ -32,10 +32,17 @@
         android:text="顯示UBike地圖2" />
     
     <Button
-        android:id="@+id/ubike_json"
+        android:id="@+id/ubike_map3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ubike_map2"
+        android:text="顯示UBike地圖3" />
+    
+    <Button
+        android:id="@+id/ubike_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ubike_map3"
         android:text="顯示Json" />
     
     <TextView 
