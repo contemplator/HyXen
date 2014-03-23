@@ -39,10 +39,12 @@ public class MainActivity extends Activity {
 	
 	private String stations = null;
 	private Stations data;
+	private Button ubike;
 	private Button ubike_list;
 	private Button ubike_map;
 	private Button ubike_map2;
 	private Button ubike_map3;
+	private Button ubike_map4;
 	private Button ubike_json;
 	private TextView text_test;
 	
@@ -91,6 +93,18 @@ public class MainActivity extends Activity {
 	}
 
 	private void initViews() {
+		
+		ubike = (Button) findViewById(R.id.ubike);
+		ubike.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, UBike.class);
+				intent.putExtra("stations", stations);
+				startActivity(intent);
+			}
+		});
+		
 		ubike_list = (Button) findViewById(R.id.ubike_list);
 		ubike_list.setOnClickListener(new OnClickListener() {
 			
@@ -131,6 +145,17 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(MainActivity.this, UBikeMap3.class);
+				intent.putExtra("stations", stations);
+				startActivity(intent);
+			}
+		});
+		
+		ubike_map4 = (Button) findViewById(R.id.ubike_map4);
+		ubike_map4.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(MainActivity.this, UBikeMap4.class);
 				intent.putExtra("stations", stations);
 				startActivity(intent);
 			}
@@ -205,9 +230,10 @@ public class MainActivity extends Activity {
 					@Override
 					public void run() {
 						text_test.setText(data2.get(0).getMday());
+						getString();
 					}
 				});
-				getString();
+				
 			}
 		}.start();
 	}
@@ -218,9 +244,21 @@ public class MainActivity extends Activity {
 			public void run(){
 				JSONArray data3 = new JSONArray();
 				for(int i=0; i<data2.size(); i++){
-					data3.put(data2.get(i));
+					data3.put(data2.get(i).getJsonObject());
 				}
 				stations = data3.toString();
+				showText();
+			}
+
+			private void showText() {
+				// TODO Auto-generated method stub
+				text_test.post(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						text_test.setText(stations);
+					}
+				});
 			}
 		}.start();
 	};

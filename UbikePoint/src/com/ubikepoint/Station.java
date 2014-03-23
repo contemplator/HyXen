@@ -2,6 +2,7 @@ package com.ubikepoint;
 
 import java.util.HashMap;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Station {
@@ -24,6 +25,16 @@ public class Station {
 		this.mDay = md;
 	}
 	
+	Station(JSONObject j) throws JSONException{
+		this.name = j.getString("name");
+		this.address = j.getString("address");
+		this.tot = (Integer) j.getInt("tot");
+		this.sus = (Integer) j.getInt("sus");
+		this.lat = (float) j.getDouble("lat");
+		this.lng = (float) j.getDouble("lng");
+		this.mDay = j.getString("mDay");
+	}
+	
 	public int getTot(){
 		return tot;
 	}
@@ -44,7 +55,15 @@ public class Station {
 		h.put("lng", Float.toString(lng));
 		h.put("tot", Integer.toString(tot));
 		h.put("sus", Integer.toString(sus));
+		h.put("mDay", mDay);
 		JSONObject j = new JSONObject(h);
 		return j;
+	}
+	
+	public String parseString(){
+		String s = "";
+		s += name;
+		s += address;
+		return s;
 	}
 }

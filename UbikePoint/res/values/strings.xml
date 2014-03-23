@@ -14,5 +14,6 @@
     <string name="title_activity_ubike_map2">UBikeMap2</string>
     <string name="title_activity_ubike_json">UBikeJson</string>
     <string name="title_activity_ubike_map3">UBikeMap3</string>
+    <string name="title_activity_ubike_map4">UBikeMap4</string>
 
 </resources>

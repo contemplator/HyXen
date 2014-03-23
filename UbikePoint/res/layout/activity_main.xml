@@ -12,9 +12,16 @@
      >
     
     <Button
+        android:id="@+id/ubike"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UBike" />
+    
+    <Button
         android:id="@+id/ubike_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/ubike"
         android:text="顯示UBike列表" />
     
     <Button
@@ -39,10 +46,17 @@
         android:text="顯示UBike地圖3" />
     
     <Button
-        android:id="@+id/ubike_json"
+        android:id="@+id/ubike_map4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ubike_map3"
+        android:text="顯示UBike地圖4" />
+    
+    <Button
+        android:id="@+id/ubike_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ubike_map4"
         android:text="顯示Json" />
     
     <TextView 
