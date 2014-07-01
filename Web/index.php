@@ -4,7 +4,7 @@
     $db = new DB();
     $db->connect_db($_DB['host'], $_DB['username'], $_DB['password'], $_DB['dbname']);
 
-    $apps = array("RailTimeLine", "Barcode", "SpeedDetectorEVO");
+    $apps = array("RailTimeline", "Barcode", "SpeedDetectorEVO");
     $app = "RailTimeLine";
     $item = "current_device_installs";
     $date_start;
@@ -18,27 +18,55 @@
 	$date = $date->format('Y-m-d');
 	$date_start = $date;
 
-	echo $date_start.",".$date_end;
-	$sql = "SELECT * FROM `downloads` ";
+	// echo $date_start.",".$date_end;
+	$sql = "SELECT `appname`, `date`, ".$item." FROM `downloads` ";
 	for($count_app=0; $count_app<count($apps); $count_app++){
 		if($count_app == 0){
-			$sql_app = "WHERE (`appname` = '".$app."' AND `date` >=  '".$date."')";	
+			$sql_app = "WHERE (`appname` = '".$apps[$count_app]."' AND `date` >=  '".$date."')";
+			$sql .= $sql_app;
+		}else{
+			$sql_app = "OR (`appname` = '".$apps[$count_app]."' AND `date` >= '".$date_start."')";
+			$sql .= $sql_app;
 		}
-		
 	}
-    $sql = "SELECT * FROM `downloads` WHERE (`appname` = '".$app."' AND `date` >=  '".$date."') ORDER BY `date` ASC;";
+	$sql_order = " ORDER BY `date` ASC;";
+	$sql .= $sql_order;
     echo $sql;
     $db -> query($sql);
 
     $data = array(); // two-dimensional: date[], app1[], app2[]...
     $dates = array();
-    $piece = array(); // one-dimensional: app1_data[]
+    $rail = array();
+    $evo = array();
+    $zerocard = array();
     while($result = $db->fetch_array()){
-    	array_push($dates, $result['date']);
-    	array_push($piece, $result['current_device_installs']);
+    	// print_r($result);
+    	// if($result['appname'] == 'RailTimeline'){
+    	// 	print_r($result);
+    	// }
+    	switch ($result['appname']) {
+    		case 'RailTimeline':
+    			// print_r($result);
+    			array_push($dates, "2014-06-01");
+    			array_push($rail, $result[$item]);
+    			break;
+    		case "SpeedDetectorEvo":
+    			array_push($evo, $result[$item]);
+    			break;
+    		case 'Barcode':
+    			array_push($zerocard, $result[$item]);
+    			break;
+    		default:
+    			break;
+    	}
     }
-    array_push($data, $dates);
-    array_push($data, $piece);
+    // print_r($dates);
+    // print_r($rail);
+    $data['dates'] = $dates;
+    $data['rail'] = $rail;
+    $data['evo'] = $evo;
+    $data['zerocard'] = $zerocard;
+    // print_r($date);
     // print_r($data);
 
 ?>
@@ -63,9 +91,9 @@
 	          			$count = 0;
 	          			for($i=0; $i<$total; $i++){
 	          				if($count == $total){
-	          					echo "['".$data[0][$i]."',".$data[1][$i]."]";
+	          					echo "['".$data['dates'][$i]."',".$data['RailTimeline'][$i]."]";
 	          				}else{
-	          					echo "['".$data[0][$i]."',".$data[1][$i]."],";
+	          					echo "['".$data['dates'][$i]."',".$data['RailTimeline'][$i]."],";
 	          				}
 	          				$count++;
 	          			}
