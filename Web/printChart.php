@@ -74,7 +74,7 @@
                     if(s < 10){
                         return "0" + s.toString();
                     }else{
-                        return s;
+                        return;
                     }
                 }
         	});
@@ -116,40 +116,64 @@
                 choice.innerHTML = get;
 
         		var xmlhttp=new XMLHttpRequest();
+                
 			  	xmlhttp.onreadystatechange=function() {
                     if (xmlhttp.readyState==4 && xmlhttp.status==200) {
                         response = JSON.parse(xmlhttp.responseText);
                         document.getElementById("data").innerHTML=JSON.stringify(response);
-                        drawVisualization();
+                        drawChart();
 				    }
 				}
 				xmlhttp.open("GET",get,true);
 				xmlhttp.send();
-                
         	}
             
-            google.load('visualization', '1', {packages: ['annotatedtimeline']});
-            function drawVisualization() {
-                var data = new google.visualization.DataTable();
-                var displayer = document.getElementById("data");
-                data.addColumn('date', 'Date');
+            google.load("visualization", "1", {packages:["corechart"]});
+            function drawChart() {
+                var dataTable = [];
+                var columns = [];
+                columns.push('Date');
                 for(var i=0; i<apps.length; i++){
-                    data.addColumn('number', apps[i]);
+                    columns.push(apps[i]);
                 }
+                dataTable.push(columns);
 
-                for(var j=0; j<Object.keys(response['dates']).length; j++){
+                for(var j=0, len = Object.keys(response[apps[0]]).length; j<len; j++){
                     var row = [];
-                    row.push(new Date(response['dates'][j]));
+                    var rDate = new Date(response['dates'][j]);
+                    var dateStr = padStr(rDate.getFullYear()) +"-"+ padStr(rDate.getMonth() + 1) +"-"+ padStr(rDate.getDate());
+                    row.push(dateStr);
                     for(var a=0; a<apps.length; a++){
                         row.push(parseFloat(response[apps[a]][response['dates'][j]]));
                     }
-                    data.addRows([row]);
+                    dataTable.push(row);
                 }
+                var data = google.visualization.arrayToDataTable(
+                    dataTable
+                );
 
-                var annotatedtimeline = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-                annotatedtimeline.draw(data, {'displayAnnotations': true});
+                var options = {
+                    title: 'Company Performance'
+                };
+
+                var chart_div = document.getElementById('chart_div');
+                var chart = new google.visualization.LineChart(chart_div);
+                var exportPNG = document.getElementById("exportPNG");
+                // Wait for the chart to finish drawing before calling the getImageURI() method.
+                google.visualization.events.addListener(chart, 'ready', function () {
+                    chart_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
+                    exportPNG.setAttribute("href", chart.getImageURI());
+                    exportPNG.setAttribute("download", "GoogleChart");
+                    console.log(chart_div.innerHTML);
+                });
+
+                chart.draw(data, options);
+
+                function padStr(i) {
+                    return (i < 10) ? "0" + i : "" + i;
+                }
             }
-            google.setOnLoadCallback(drawVisualization);
+            google.setOnLoadCallback(drawChart);
     	</script>
     	<style type="text/css">
     		nav{
@@ -191,32 +215,10 @@
             </tr>
 		</table>
         <div class="container_12">
-            <a href="printChart.php">一般圖表</a>
+            <a id="exportPNG" href="printChart.php">下載圖表</a>
         </div>
         <div id="chart_div" class="container_12" style="width: 900px; height: 500px;"></div>
-        <table id="displayTable">
-
-        </table>
         <p id="data">no data</p>
         <p id="choice">Your choice</p>
 	</body>
-    <script type="text/javascript">
-        var displayTable = document.getElementById("displayTable");
-        var column = "<tr><td>Date</td>"
-        for(var i=0; i<apps.length; i++){
-            column += "<td>"+ apps[i] +"</td>";
-        }
-        column += "</tr>";
-        displayTable.innerHTML += column;
-
-        for(var j=0; j<Object.keys(response["dates"]).length; j++){
-        //     var row = "<tr>";
-        //     row += "<td>" + (new Date(response['dates'][j])) + "</td>";
-        //     for(var a=0; a<apps.length; a++){
-        //         row += "<td>" + response[apps[a]][response['dates'][j]] + "</td>";
-        //     }
-        //     row += "</tr>";
-        //     displayTable.innerHTML += row;
-        }
-    </script>
 </html>
