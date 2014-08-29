@@ -16,6 +16,7 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/period.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
 	</head>
 	<script type="text/javascript">
         // declare variable
@@ -131,6 +132,7 @@
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
                     // alert(xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
+                    document.getElementById("exportPng").value = get;
                     drawVisualization();
                     updateTable();
                 }
@@ -180,6 +182,7 @@
                 innerData += table_data;
             }
             data_div.innerHTML = innerData;
+            document.getElementById("exportCsv").value = innerData;
         }
     </script>
 	<body>
@@ -248,6 +251,17 @@
                             </td>
                         </tr>
                     </table>
+
+                    <form action="exportPng.php" method="POST" target="new">
+                        <input type="text" name="data" value="" hidden=true id="exportPng">
+                        <input type="submit" name="submit" value="匯出圖片" class="btn btn-warning" id="exportPng">
+                    </form>
+                    <form action="exportCsv.php" method="POST" target="new">
+                        <input type="text" name="data" value="" hidden=true id="exportCsv">
+                        <input type="submit" name="submit" value="匯出表格" class="btn btn-warning" id="exportCsv">
+                    </form>
+                    <!-- <a href="exportPng.php" target="_blank" class="btn btn-warning" id="exportPng">匯出圖片</a> -->
+                    <!-- <a href="exportCsv.php" target="_blank" class="btn btn-warning" id="exportCsv">匯出表格</a> -->
 
                     <div id="chart_div" class="container_12" style="width: 900px; height: 500px;"></div><br>
 

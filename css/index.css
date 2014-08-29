@@ -1,0 +1,16 @@
+#exportPng{
+	margin: 10px;
+	margin-top: -15px;
+	float: right;
+}
+
+#exportCsv{
+	margin: 10px;
+	margin-top: -15px;
+	float: right;
+}
+
+#data_div{
+	margin-top: 20px;
+	width: 100%;
+}
