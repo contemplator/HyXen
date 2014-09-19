@@ -156,9 +156,11 @@
 
             //ajax
             var get = "apps_getdata.php?os="+ os +"&app=" + app + "&opt=" + option + "&ds=" + date_start + "&de=" + date_end + "&period=" + period;
+            // alert(get);
             var xmlhttp=new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    // alert(xmlhttp.response);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
@@ -178,7 +180,6 @@
             data.addColumn('date', 'Date');
             for(var i=0; i<app.length; i++){
                 data.addColumn('number', app[i]);
-                data.addColumn('string', 'comment');
             }
 
             for(var j=0; j<Object.keys(response['dates']).length; j++){
@@ -186,7 +187,6 @@
                 row.push(new Date(response['dates'][j]));
                 for(var a=0; a<app.length; a++){
                     row.push(parseFloat(response[app[a]][response['dates'][j]]));
-                    row.push("hihi");
                 }
                 data.addRows([row]);
             }
@@ -201,14 +201,30 @@
             var innerData = "";
             var table_title = "<tr><th>日期</th>";
             for(var i=0; i<app.length; i++){
-                table_title += "<th>" + app[i] + "</th><th>comment</th>";
+                table_title += "<th>" + app[i] + "</th>";
             }
             table_title += "</tr>";
             innerData +=  table_title;
             for(var i=0; i<Object.keys(response['dates']).length; i++){
                 var table_data = "<tr><td>" + response['dates'][i] + "</td>";
                 for(var j=0; j<app.length; j++){
-                    table_data = table_data + "<td>" + response[app[j]][response['dates'][i]] + "</td><td>hihi</td>";
+                    if(option == "rate_of_survival"){
+                        if(typeof(response[app[j]][response['dates'][i]]) == "undefined"){
+                            table_data = table_data + "<td>未滿一周</td>";
+                            continue;
+                        };
+                        if(response[app[j]][response['dates'][i]].substring(0,2) == "-1"){
+                            table_data = table_data + "<td>" + "-1" + response[app[j]][response['dates'][i]].substring(3,5) + "." + response[app[j]][response['dates'][i]].substring(5,7) + "%" + "</td>";
+                        }else if(response[app[j]][response['dates'][i]].substring(0,1) == "-"){
+                            table_data = table_data + "<td>" + "-" + response[app[j]][response['dates'][i]].substring(3,5) + "." + response[app[j]][response['dates'][i]].substring(5,7) + "%" + "</td>";
+                        }else if(response[app[j]][response['dates'][i]].substring(0,1) == "1"){
+                            table_data = table_data + "<td>" + "1" + response[app[j]][response['dates'][i]].substring(3,5) + "." + response[app[j]][response['dates'][i]].substring(5,7) + "%" + "</td>";
+                        }else{
+                            table_data = table_data + "<td>" + response[app[j]][response['dates'][i]].substring(2,4) + "." + response[app[j]][response['dates'][i]].substring(4,6) + "%" + "</td>";
+                        }
+                    }else{
+                        table_data = table_data + "<td>" + response[app[j]][response['dates'][i]] + "</td>";
+                    }
                 }
                 table_data += "</tr>";
                 innerData += table_data;

@@ -72,8 +72,11 @@
                 if($opt == "daily_installs_difference"){
                     $data[$apps[$check_app]][$result['date']] = $result['daily_device_installs'] - $result['daily_device_uninstalls'];
                 }else if($opt == "rate_of_survival"){
-                    $data[$apps[$check_app]][$result['date']] = ($result['daily_device_installs'] - $result['daily_device_uninstalls']) / $result['daily_device_installs'];
-                    $data[$apps[$check_app]][$result['date']] = number_format($data[$apps[$check_app]][$result['date']], 2);
+                    if($result['daily_device_installs'] == 0){
+                        $data[$apps[$check_app]][$result['date']] = "-1.0000";
+                    }else{
+                        $data[$apps[$check_app]][$result['date']] = getPercent((int)$result["daily_device_installs"], (int)$result["daily_device_uninstalls"]);
+                    }
                 }else{
                     $data[$apps[$check_app]][$result['date']] = $result[$opt];
                 }
@@ -83,20 +86,43 @@
     }
 
     // arrange by period
-    switch ($period) {
-        case 'daily':
-            break;
-        case 'weekly':
-            $data = weekly($data);
-            break;
-        case 'monthly':
-            $data = monthly($data);
-            break;
-        case 'year':
-            $data = year($data);
-            break;
+    if($option != "total_install" && $option != "current_device_installs" && $option != "rate_of_survival"){
+        switch ($period) {
+            case 'daily':
+                break;
+            case 'weekly':
+                $data = weekly($data);
+                break;
+            case 'monthly':
+                $data = monthly($data);
+                break;
+            case 'year':
+                $data = year($data);
+                break;
+        }
+    }else{
+        switch ($period) {
+            case 'daily':
+                break;
+            case 'weekly':
+                $data = weekly_apps($data, $option);
+                break;
+            case 'monthly':
+                $data = monthly_apps($data, $option);
+                break;
+            case 'year':
+                $data = year_apps($data, $option);
+                break;
+        }
     }
+    
 
     // echo $sql;
     echo json_encode($data, JSON_FORCE_OBJECT)."\n\n";
+
+    function getPercent($installs, $uninstalls){
+        $percent = ($installs - $uninstalls) / $installs;
+        $percent = number_format($percent, 4);
+        return $percent;
+    }
 ?>

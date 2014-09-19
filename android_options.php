@@ -157,10 +157,10 @@
 
             // ajax
             var get = "options_getdata.php?os=" + os + "&app=" + app + "&opt=" + option + "&ds=" + date_start + "&de=" + date_end + "&period=" + period;
+            // alert(get);
             var xmlhttp=new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-                    alert(xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
