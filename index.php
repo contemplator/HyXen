@@ -30,8 +30,14 @@
 
         // inital datepicker
         $(function() {        
-            $( "#date_start" ).datepicker();
-            $( "#date_end" ).datepicker();
+            $( "#date_start" ).datepicker({
+                changeMonth: true,
+                changeYear: true
+            });
+            $( "#date_end" ).datepicker({
+                changeMonth: true,
+                changeYear: true
+            });
         });
 
         // init the variable and view
@@ -148,8 +154,11 @@
             var displayer = document.getElementById("data");
             data.addColumn('date', 'Date');
             data.addColumn('number', 'RailTimeline');
+            // data.addColumn('String', 'RailTimeline_comment');
             data.addColumn('number', 'SpeedDetectorEvo');
+            // data.addColumn('String', 'SpeedDetector_comment');
             data.addColumn('number', 'Barcode');
+            // data.addColumn('String', 'Barcode_comment');
 
             for(var j=0; j<Object.keys(response["dates"]).length; j++){
                 var row = [];

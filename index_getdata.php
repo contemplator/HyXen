@@ -59,7 +59,7 @@
     unset($Barcode);
 
     // set itunes sql of query and execute
-    $search_itunes = "SELECT * FROM `i_downloads` WHERE (`appname` = 'RailTimeline' AND `date` >= '".$date_start."' AND `date` <= '".$date_end."') OR (`appname` = 'SpeedDetectorEvo' AND `date` >= '".$date_start."' AND `date` <= '".$date_end."') OR (`appname` = 'Barcode' AND `date` >= '".$date_start."' AND `date` <= '".$date_end."');";
+    $search_itunes = "SELECT * FROM `i_downloads` WHERE (`appname` = 'RailTimeline' AND `date` >= '".$date_start."' AND `date` <= '".$date_end."') OR (`appname` = 'SpeedDetectorEvo' AND `date` >= '".$date_start."' AND `date` <= '".$date_end."') OR (`appname` = 'Barcode' AND `date` >= '".$date_start."' AND `date` <= '".$date_end."') ORDER BY `date` DESC;";
     $db->query($search_itunes);
 
     // arrange result

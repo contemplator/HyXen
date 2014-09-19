@@ -44,16 +44,35 @@
         $current_day = $first_date_day;
         while($count < count($data_pre['dates'])){
         	//if($current_day == 6){ // 周日開始，周六結束
-            if($current_day == 3){ // 周四開始，周三結束
+            if($current_day == 3){ // 周四開始，周三結束(一周開始)
         		array_push($data['dates'], $data_pre['dates'][$count]);
         		for($i=1; $i<count($data_key); $i++){
+                    if($data_key[$i] == "total_install" || $data_key[$i] == "current_device_installs"){
+                        $total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                        continue;
+                    }
+                    if($data_key[$i] == "rate_of_survival"){
+                        $total[$data_key[$i]] += (double)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                        continue;
+                    }
         			$total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
         		}
         		$current_day--;
             // }else if($current_day == 0){ // 周日開始，周六結束
-        	}else if($current_day == 4){ // 周四開始，周三結束
+        	}else if($current_day == 4){ // 周四開始，周三結束(總結一周)
         		for($i=1; $i<count($data_key); $i++){
-        			$date = end($data['dates']);
+                    $date = end($data['dates']);
+                    if($data_key[$i] == "total_install" || $data_key[$i] == "current_device_installs"){
+                        $data[$data_key[$i]][$date] = $total[$data_key[$i]];
+                        $total[$data_key[$i]] = 0;
+                        continue;
+                    }
+                    if($data_key[$i] == "rate_of_survival"){
+                        $total[$data_key[$i]] += (double)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                        $data[$data_key[$i]][$date] = (String)(number_format(($total[$data_key[$i]] / 7), 4));
+                        $total[$data_key[$i]] = 0;
+                        continue;
+                    }
         			$total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
         			$data[$data_key[$i]][$date] = $total[$data_key[$i]];
         			$total[$data_key[$i]] = 0;
@@ -61,6 +80,13 @@
         		$current_day--;
         	}else{
         		for($i=1; $i<count($data_key); $i++){
+                    if($data_key[$i] == "total_install" || $data_key[$i] == "current_device_installs"){
+                        continue;
+                    }
+                    if($data_key[$i] == "rate_of_survival"){
+                        $total[$data_key[$i]] += (double)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                        continue;
+                    }
         			$total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
         		}
         		$current_day--;
@@ -89,15 +115,27 @@
         
         $current_month = getMonth($last_date);
         array_push($data['dates'], $data_pre['dates'][0]);
+        $count_permonth = 0;
         while($count < count($data_pre['dates'])){
-            if(getMonth($data_pre['dates'][$count]) == $current_month){
+            if(getMonth($data_pre['dates'][$count]) == $current_month){ // 同一個月
                 $date = array_pop($data['dates']);
                 array_push($data['dates'], $date);
                 for($i=1; $i<count($data_key); $i++){
-                    $total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
-                    $data[$data_key[$i]][$date] = $total[$data_key[$i]];
-                }
-            }else{
+                    if($data_key[$i] == "current_device_installs" || $data_key[$i] == "total_install"){
+                        if($total[$data_key[$i]] == 0){
+                            $total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                            $data[$data_key[$i]][$date] = $total[$data_key[$i]];    
+                        }
+                    }else if($data_key[$i] == "rate_of_survival"){
+                        $total[$data_key[$i]] += (double)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                        $data[$data_key[$i]][$date] = number_format($total[$data_key[$i]],4);
+                    }else{
+                        $total[$data_key[$i]] += (int)$data_pre[$data_key[$i]][$data_pre['dates'][$count]];
+                        $data[$data_key[$i]][$date] = $total[$data_key[$i]];
+                    }
+                } 
+            }else{ // 不同月
+                
                 $current_month = getMonth($data_pre['dates'][$count]);
                 $date = $data_pre['dates'][$count];
                 array_push($data['dates'], $data_pre['dates'][$count]);

@@ -178,6 +178,7 @@
             data.addColumn('date', 'Date');
             for(var i=0; i<app.length; i++){
                 data.addColumn('number', app[i]);
+                data.addColumn('string', 'comment');
             }
 
             for(var j=0; j<Object.keys(response['dates']).length; j++){
@@ -185,6 +186,7 @@
                 row.push(new Date(response['dates'][j]));
                 for(var a=0; a<app.length; a++){
                     row.push(parseFloat(response[app[a]][response['dates'][j]]));
+                    row.push("hihi");
                 }
                 data.addRows([row]);
             }
@@ -199,14 +201,14 @@
             var innerData = "";
             var table_title = "<tr><th>日期</th>";
             for(var i=0; i<app.length; i++){
-                table_title += "<th>" + app[i] + "</th>";
+                table_title += "<th>" + app[i] + "</th><th>comment</th>";
             }
             table_title += "</tr>";
             innerData +=  table_title;
             for(var i=0; i<Object.keys(response['dates']).length; i++){
                 var table_data = "<tr><td>" + response['dates'][i] + "</td>";
                 for(var j=0; j<app.length; j++){
-                    table_data = table_data + "<td>" + response[app[j]][response['dates'][i]] + "</td>";
+                    table_data = table_data + "<td>" + response[app[j]][response['dates'][i]] + "</td><td>hihi</td>";
                 }
                 table_data += "</tr>";
                 innerData += table_data;

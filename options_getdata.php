@@ -62,7 +62,17 @@
 	while($result = $db->fetch_array()){
 		array_push($data['dates'], $result['date']);
 		for($count_opt=0; $count_opt<count($option); $count_opt++){
-			$data[$option[$count_opt]][$result['date']] = (int)$result[$option[$count_opt]];
+            if($option[$count_opt] == "daily_installs_difference"){
+                $data[$option[$count_opt]][$result['date']] = ((int)$result["daily_device_installs"] - (int)$result["daily_device_uninstalls"]);
+            }else if($option[$count_opt] == "rate_of_survival"){
+                if((int)$result["daily_device_installs"] == 0){
+                    $data[$option[$count_opt]][$result['date']] = "-1.0000";
+                }else{
+                    $data[$option[$count_opt]][$result['date']] = getPercent((int)$result["daily_device_installs"], (int)$result["daily_device_uninstalls"]);    
+                }
+            }else{
+                $data[$option[$count_opt]][$result['date']] = (int)$result[$option[$count_opt]];    
+            }
 		}
 	}
 
@@ -82,4 +92,10 @@
     }
 
 	echo json_encode($data, JSON_FORCE_OBJECT)."\n\n";
+
+    function getPercent($installs, $uninstalls){
+        $percent = ($installs - $uninstalls) / $installs;
+        $percent = number_format($percent, 4);
+        return $percent;
+    }
 ?>

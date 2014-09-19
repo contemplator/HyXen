@@ -160,6 +160,7 @@
             var xmlhttp=new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    alert(xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
@@ -207,7 +208,23 @@
             for(var i=0; i<Object.keys(response['dates']).length; i++){
                 var table_data = "<tr><td>" + response['dates'][i] + "</td>";
                 for(var j=0; j<option.length; j++){
-                    table_data = table_data + "<td>" + response[option[j]][response['dates'][i]] + "</td>";
+                    if(option[j] == "rate_of_survival"){
+                        if(typeof(response[option[j]][response['dates'][i]]) == "undefined"){
+                            table_data = table_data + "<td>未滿一周</td>";
+                            continue;
+                        };
+                        if(response[option[j]][response['dates'][i]].substring(0,2) == "-1"){
+                            table_data = table_data + "<td>" + "-1" + response[option[j]][response['dates'][i]].substring(3,5) + "." + response[option[j]][response['dates'][i]].substring(5,7) + "%" + "</td>";
+                        }else if(response[option[j]][response['dates'][i]].substring(0,1) == "-"){
+                            table_data = table_data + "<td>" + "-" + response[option[j]][response['dates'][i]].substring(3,5) + "." + response[option[j]][response['dates'][i]].substring(5,7) + "%" + "</td>";
+                        }else if(response[option[j]][response['dates'][i]].substring(0,1) == "1"){
+                            table_data = table_data + "<td>" + "1" + response[option[j]][response['dates'][i]].substring(3,5) + "." + response[option[j]][response['dates'][i]].substring(5,7) + "%" + "</td>";
+                        }else{
+                            table_data = table_data + "<td>" + response[option[j]][response['dates'][i]].substring(2,4) + "." + response[option[j]][response['dates'][i]].substring(4,6) + "%" + "</td>";
+                        }
+                    }else{
+                        table_data = table_data + "<td>" + response[option[j]][response['dates'][i]] + "</td>";
+                    }
                 }
                 table_data += "</tr>";
                 innerData += table_data;
