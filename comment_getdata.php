@@ -1,5 +1,4 @@
 <?php
-    require("period_function.php");
     //connect database
     require("db_config.php");
     require("db_class.php");
@@ -12,7 +11,6 @@
     $date_start = "";
     $date_end = "";
     $option = "";
-    $period = "";
     $data = array();
 
     // get the request
@@ -24,19 +22,19 @@
         $apps = explode(",", $_REQUEST["app"]);
     }
 
-    if($_REQUEST["opt"] !== ""){
-        $opt = $_REQUEST["opt"];
+    if($_REQUEST["option"] !== ""){
+        $option = $_REQUEST["option"];
     }
 
     if($_REQUEST["ds"] !== null && $_REQUEST["de"] !== null){
         $date_start = $_REQUEST["ds"];
         $date_end = $_REQUEST["de"];
     }
-
-    if($_REQUEST["period"] !== null){
-        $period = $_REQUEST["period"];
-    }
     
+    if($_REQUEST["option"] !== null){
+        $optionion = $_REQUEST["option"];
+    }
+
     // set the sql for query
     if($os == "Android"){
         $sql = "SELECT * FROM `downloads` ";
@@ -69,38 +67,22 @@
                 if($check_app == 0){
                     array_push($data['dates'], $result['date']);
                 }
-                if($opt == "daily_installs_difference"){
+                if($option == "daily_installs_difference"){
                     $data[$apps[$check_app]][$result['date']] = array();
-                    $data[$apps[$check_app]][$result['date']][$opt] = $result['daily_device_installs'] - $result['daily_device_uninstalls'];
+                    $data[$apps[$check_app]][$result['date']][$option] = $result['daily_device_installs'] - $result['daily_device_uninstalls'];
                     $data[$apps[$check_app]][$result['date']]['comments'] = $result['comments'];
-                }else if($opt == "rate_of_survival"){
+                }else if($option == "rate_of_survival"){
                     $data[$apps[$check_app]][$result['date']] = array();
-                    $data[$apps[$check_app]][$result['date']][$opt] = ($result['daily_device_installs'] - $result['daily_device_uninstalls']) / $result['daily_device_installs'];
-                    $data[$apps[$check_app]][$result['date']][$opt] = number_format($data[$apps[$check_app]][$result['date']][$opt], 2);
+                    $data[$apps[$check_app]][$result['date']][$option] = ($result['daily_device_installs'] - $result['daily_device_uninstalls']) / $result['daily_device_installs'];
+                    $data[$apps[$check_app]][$result['date']][$option] = number_format($data[$apps[$check_app]][$result['date']][$option], 2);
                     $data[$apps[$check_app]][$result['date']]['comments'] = $result['comments'];
                 }else{
                     $data[$apps[$check_app]][$result['date']] = array();
-                    $data[$apps[$check_app]][$result['date']][$opt] = $result[$opt];
+                    $data[$apps[$check_app]][$result['date']][$option] = $result[$option];
                     $data[$apps[$check_app]][$result['date']]['comments'] = $result['comments'];
                 }
-                
             }
         }
-    }
-
-    // arrange by period
-    switch ($period) {
-        case 'daily':
-            break;
-        case 'weekly':
-            $data = weekly($data);
-            break;
-        case 'monthly':
-            $data = monthly($data);
-            break;
-        case 'year':
-            $data = year($data);
-            break;
     }
 
     // echo $sql;

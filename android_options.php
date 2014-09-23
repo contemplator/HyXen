@@ -161,6 +161,7 @@
             var xmlhttp=new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    // alert(xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
@@ -261,6 +262,7 @@
                                 <li><a href="iOS_options.php">單支APP比較</a></li>
                             </ul>
                         </li>
+                        <li><a href="comment.php">下載量波動記錄</a></li>
                     </ul>
                 </div>
             </div>

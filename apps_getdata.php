@@ -1,5 +1,6 @@
 <?php
     require("period_function.php");
+    require("period_function_apps.php");
     //connect database
     require("db_config.php");
     require("db_class.php");
@@ -35,6 +36,10 @@
 
     if($_REQUEST["period"] !== null){
         $period = $_REQUEST["period"];
+    }
+
+    if($_REQUEST["opt"] !== null){
+        $option = $_REQUEST["opt"];
     }
     
     // set the sql for query

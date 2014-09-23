@@ -217,6 +217,7 @@
                                 <li><a href="iOS_options.php">單支APP比較</a></li>
                             </ul>
                         </li>
+                        <li><a href="comment.php">下載量波動記錄</a></li>
             		</ul>
             	</div>
             </div>

@@ -39,7 +39,7 @@
         <script type="text/javascript" src="js/period.js"></script>
         <link rel="stylesheet" type="text/css" href="css/index.css" />
     </head>
-<script>
+    <script>
         // declare variable
         var response;
         var app = [];
@@ -155,11 +155,11 @@
             title_duration.innerHTML = date_start + " ~ " + date_end;
 
             //ajax
-            var get = "apps_getdata_new.php?os="+ os +"&app=" + app + "&opt=" + option + "&ds=" + date_start + "&de=" + date_end + "&period=" + period;
+            var get = "comment_getdata.php?os="+ os +"&app=" + app + "&option=" + option + "&ds=" + date_start + "&de=" + date_end + "&period=" + period;
             var xmlhttp=new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-                    // alert(xmlhttp.responseText);
+                    // prompt("Please enter your name", xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
@@ -187,7 +187,11 @@
                 row.push(new Date(response['dates'][j]));
                 for(var a=0; a<app.length; a++){
                     row.push(parseFloat(response[app[a]][response['dates'][j]][option]));
-                    row.push(response[app[a]][response['dates'][j]]['comments']);
+                    if(response[app[a]][response['dates'][j]]['comments']){
+                        row.push(response[app[a]][response['dates'][j]]['comments']);    
+                    }else{
+                        row.push(undefined);
+                    }
                 }
                 data.addRows([row]);
             }
@@ -223,7 +227,14 @@
             for(var i=0; i<Object.keys(response['dates']).length; i++){
                 var table_data = "<tr><td>" + response['dates'][i] + "</td>";
                 for(var j=0; j<app.length; j++){
-                    table_data = table_data + "<td>" + response[app[j]][response['dates'][i]][option] + "</td><td>" + response[app[j]][response['dates'][i]]['comments'] + "</td>";
+                    var comment = response[app[j]][response['dates'][i]]['comments'];
+                    if(comment == ""){
+                        comment = "更新紀錄";
+                    }
+                    var appname = app[j];
+                    var date = response['dates'][i];
+                    var variable = appname + "," + date;
+                    table_data = table_data + "<td>" + response[app[j]][response['dates'][i]][option] + "</td><td><div onclick='promptComment(\""+appname+"\", \""+date+"\")'>" + comment + "</div></td>";
                 }
                 table_data += "</tr>";
                 innerData += table_data;
@@ -256,10 +267,59 @@
             }
             updateData();
         }
+
+        function removeChart(){
+            var chart = document.getElementById("chart_div");
+            if (chart.className == "container_12 chart_div") {
+                chart.className = "container_12 chart_div_remove";
+            }else{
+                chart.className = "container_12 chart_div";
+            };
+        }
+
+        function updateComment(appname, date, comment){
+            // alert(appname + "," + date + "," + comment);
+            var get = "update_comment.php?os="+ os +"&appname=" + appname + "&date=" + date + "&comment=" + comment;
+            // alert(get);
+            var xmlhttp=new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function() {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    // alert(xmlhttp.responseText);
+                    updateData();
+                }
+            }
+            xmlhttp.open("GET",get,true);
+            xmlhttp.send();
+        }
+
+        function promptComment(appname, date){
+            var comment = prompt("請輸入要紀錄的事件", "ex:排名、Bug、APP更新...");
+            if (comment != "") {
+                updateComment(appname,date,comment);
+            };
+        }
+
     </script>
     <style type="text/css">
         .inline-float{
             float: left;
+        }
+        #removeChart{
+            margin: 10px;
+            margin-top: -15px;
+            float: right;
+        }
+        .chart_div_remove{
+            margin-bottom: 30px;
+            position:absolute;
+            left:-9999px;
+            width: 900px;
+            height: 400px;
+        }
+        .chart_div{
+            margin-bottom: 30px;
+            width: 900px;
+            height: 400px;
         }
     </style>
     <body>
@@ -271,7 +331,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="index.php">Home</a></li>
-                        <li class="active">
+                        <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Android&nbsp<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li class="active"><a href="android_apps.php">多支APP比較</a></li>
@@ -285,6 +345,7 @@
                                 <li><a href="iOS_options.php">單支APP比較</a></li>
                             </ul>
                         </li>
+                        <li class="active"><a href="">下載量波動紀錄</a></li>
                     </ul>
                 </div>
             </div>
@@ -327,17 +388,9 @@
                             <td class="grid_2">結束日期</td>
                             <td><input type="text" id="date_end" name="date_end" value="" onchange="updateData()"></td>
                         </tr>
-                        <tr>
-                            <td class="grid_2">週期</td>
-                            <td>
-                                <input type="radio" name="period" value="daily" onchange="updatePeriod('daily', 'Android')">日&nbsp
-                                <input type="radio" name="period" value="weekly" onchange="updatePeriod('weekly', 'Android')">週&nbsp
-                                <input type="radio" name="period" value="monthly" onchange="updatePeriod('monthly', 'Android')">月&nbsp
-                                <input type="radio" name="period" value="year" onchange="updatePeriod('year', 'Android')">年&nbsp
-                            </td>
-                        </tr>
                     </table>
 
+                    <Button class="btn btn-info" id="removeChart" onclick="removeChart()">隱藏圖表</Button>
                     <form action="exportPng.php" method="POST" target="new">
                         <input type="text" name="data" value="" hidden=true id="exportPng">
                         <input type="submit" name="submit" value="匯出圖片" class="btn btn-warning" id="exportPng">
@@ -347,9 +400,9 @@
                         <input type="submit" name="submit" value="匯出表格" class="btn btn-warning" id="exportCsv">
                     </form>
 
-                    <div id="chart_div" class="container_12" style="width: 900px; height: 500px;"></div><br>
+                    <div id="chart_div" class="container_12 chart_div"></div><br>
 
-                    <table id="data_div" class ="table table-hover container_12">
+                    <table id="data_div" class ="table table-hover" style="width: 900px;">
                         <!-- data from updateTable()-->
                     </table>
                 </div>
