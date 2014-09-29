@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    if(!isset($_SESSION['account'])){
+        header("location:login.php");
+    }
+?>
 <html>
 	<head>
         <meta http-equiv="Content-Type" content="text/html charset=utf-8">
