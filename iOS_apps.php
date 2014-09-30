@@ -275,7 +275,13 @@
                                 <li><a href="iOS_options.php">單支APP比較</a></li>
                             </ul>
                         </li>
-                        <li><a href="comment.php">下載量波動記錄</a></li>
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">下載量波動紀錄&nbsp<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="comment_android.php">Android</a></li>
+                                <li><a href="comment_iOS.php">iOS</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -42,8 +42,8 @@
     <script>
         // declare variable
         var response;
-        var app = "";
-        var option = [];
+        var app = [];
+        var option = "";
         var date_start = "";
         var date_end = "";
         var period = "";
@@ -57,7 +57,7 @@
 
         // init the variable and view
         $(document).ready(function(){
-            // init the date
+            // init date
             var d = new Date();
             var date_end = d.getFullYear() + "-" +dateAddZero(d.getMonth()+1) + "-" + dateAddZero(d.getDate());
             var date_start = d.getFullYear() + "-" +dateAddZero(d.getMonth()) + "-" + dateAddZero(d.getDate());
@@ -66,36 +66,24 @@
             document.getElementById("date_start").value = date_start.substring(5,7)+"/"+date_start.substring(8,10)+"/"+date_start.substring(0,4);
 
             // init app
+            app = ["RailTimeline", "SpeedDetectorEvo", "Barcode"];
             var apps = document.getElementsByName("app");
-            var app = "RailTimeline";
             for(var i=0; i<apps.length; i++){
-                if(apps[i].value == app){
+                if(apps[i].value == "Barcode"){
+                    apps[i].setAttribute("checked",true);
+                }else if(apps[i].value == "RailTimeline"){
+                    apps[i].setAttribute("checked",true);
+                }else if(apps[i].value == "SpeedDetectorEvo"){
                     apps[i].setAttribute("checked",true);
                 }
             }
 
-            // init options
+            // init option
             var options = document.getElementsByName("option");
-            option = ["daily_device_installs"]
+            option = "daily_device_installs";
             for(var i=0; i<options.length; i++){
-                for(var j=0; j<option.length; j++){
-                    if(options[i].value == option[j]){
-                        options[i].setAttribute("checked", true);
-                    }
-                }
-            }
-            for(var i=0; i<options.length; i++){
-                if(options[i].value != "daily_device_installs" && options[i].value != "total_install"){
-                    options[i].setAttribute("disabled", true);
-                }
-            }
-
-            // to support init date
-            function dateAddZero(s){
-                if(s < 10){
-                    return "0" + s.toString();
-                }else{
-                    return s;
+                if(options[i].value == "daily_device_installs"){
+                    options[i].setAttribute("checked", true);
                 }
             }
 
@@ -105,6 +93,14 @@
             for(var i=0; i<periods.length; i++){
                 if(periods[i].value == "daily"){
                     periods[i].setAttribute("checked", true);
+                }
+            }
+
+            function dateAddZero(s){
+                if(s < 10){
+                    return "0" + s.toString();
+                }else{
+                    return s;
                 }
             }
 
@@ -129,20 +125,18 @@
             }
 
             // get app
-            app = "";
+            app = [];
             var apps = document.getElementsByName("app");
             for (var i=0; i < apps.length; i++) {
                 if(apps[i].checked){
-                    app = apps[i].value;
+                    app.push(apps[i].value);
                 }
             }
-
             // get option
-            option = [];
             var options = document.getElementsByName("option");
             for (var i=0; i < options.length; i++) {
                 if(options[i].checked){
-                    option.push(options[i].value);
+                    option = options[i].value;
                 }
             }
 
@@ -160,11 +154,12 @@
             var title_duration = document.getElementById("title-duration");
             title_duration.innerHTML = date_start + " ~ " + date_end;
 
-            // ajax
-            var get = "options_getdata.php?os=" + os + "&app=" + app + "&opt=" + option + "&ds=" + date_start + "&de=" + date_end + "&period=" + period;
+            //ajax
+            var get = "comment_getdata.php?os="+ os +"&app=" + app + "&option=" + option + "&ds=" + date_start + "&de=" + date_end;
             var xmlhttp=new XMLHttpRequest();
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    // prompt("Please enter your name", xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
@@ -176,27 +171,47 @@
             
         }
         
-        //google chart
+        // google chart
         google.load('visualization', '1', {packages: ['annotatedtimeline']});
         function drawVisualization() {
             var data = new google.visualization.DataTable();
             var displayer = document.getElementById("data");
             data.addColumn('date', 'Date');
-            for(var i=0; i<option.length; i++){
-                data.addColumn('number', option[i]);
+            for(var i=0; i<app.length; i++){
+                data.addColumn('number', app[i]);
+                data.addColumn('string', '備註');
             }
 
             for(var j=0; j<Object.keys(response['dates']).length; j++){
                 var row = [];
                 row.push(new Date(response['dates'][j]));
-                for(var a=0; a<option.length; a++){
-                    row.push(parseFloat(response[option[a]][response['dates'][j]]));
+                for(var a=0; a<app.length; a++){
+                    row.push(parseFloat(response[app[a]][response['dates'][j]][option]));
+                    if(response[app[a]][response['dates'][j]]['comments']){
+                        row.push(response[app[a]][response['dates'][j]]['comments']);    
+                    }else{
+                        row.push(undefined);
+                    }
                 }
                 data.addRows([row]);
             }
 
             var annotatedtimeline = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-            annotatedtimeline.draw(data, {'displayAnnotations': true});
+            var chart_option = {
+                'displayAnnotations': true,
+                "showRowNumber" : true,
+                "displayZoomButtons" : false,
+                "legendPosition" : "newRow",
+                "displayExactValues" : false,
+                "dateFormat" : "yyyy-MM-dd",
+                // "displayLegendDots" : false
+                // "displayDateBarSeparator" : true
+            }
+
+            var view = new google.visualization.DataView(data);
+            view.setColumns([0]);
+            
+            annotatedtimeline.draw(data, chart_option);
         }
         // google.setOnLoadCallback(drawVisualization);
 
@@ -204,15 +219,22 @@
             var data_div = document.getElementById("data_div");
             var innerData = "";
             var table_title = "<tr><th>日期</th>";
-            for(var i=0; i<option.length; i++){
-                table_title += "<th>" + option[i] + "</th>";
+            for(var i=0; i<app.length; i++){
+                table_title += "<th>" + app[i] + "</th><th>備註</th>";
             }
             table_title += "</tr>";
             innerData +=  table_title;
             for(var i=0; i<Object.keys(response['dates']).length; i++){
                 var table_data = "<tr><td>" + response['dates'][i] + "</td>";
-                for(var j=0; j<option.length; j++){
-                    table_data = table_data + "<td>" + response[option[j]][response['dates'][i]] + "</td>";
+                for(var j=0; j<app.length; j++){
+                    var comment = response[app[j]][response['dates'][i]]['comments'];
+                    if(comment == ""){
+                        comment = "更新紀錄";
+                    }
+                    var appname = app[j];
+                    var date = response['dates'][i];
+                    var variable = appname + "," + date;
+                    table_data = table_data + "<td>" + response[app[j]][response['dates'][i]][option] + "</td><td><div onclick='promptComment(\""+appname+"\", \""+date+"\")'>" + comment + "</div></td>";
                 }
                 table_data += "</tr>";
                 innerData += table_data;
@@ -220,10 +242,84 @@
             data_div.innerHTML = innerData;
             document.getElementById("exportCsv").value = innerData;
         }
+
+        function chooseAll(appOrOption){
+            var status = "";
+            var bool = "";
+            if (appOrOption == "app") {
+                bool = "app";
+            }else if(appOrOption == "option"){
+                bool = "option";
+            }else{
+                alert("error: not exist value");
+            };
+            status = document.getElementById("allapp").checked;
+            if(status == true){
+                var apps = document.getElementsByName("app");
+                for(var i=0; i<apps.length; i++){
+                    apps[i].setAttribute("checked",true);
+                }
+            }else{
+                var apps = document.getElementsByName("app");
+                for(var i=0; i<apps.length; i++){
+                    apps[i].removeAttribute("checked");
+                }
+            }
+            updateData();
+        }
+
+        function removeChart(){
+            var chart = document.getElementById("chart_div");
+            if (chart.className == "container_12 chart_div") {
+                chart.className = "container_12 chart_div_remove";
+            }else{
+                chart.className = "container_12 chart_div";
+            };
+        }
+
+        function updateComment(appname, date, comment){
+            // alert(appname + "," + date + "," + comment);
+            var get = "update_comment.php?os="+ os +"&appname=" + appname + "&date=" + date + "&comment=" + comment;
+            // alert(get);
+            var xmlhttp=new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function() {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    // alert(xmlhttp.responseText);
+                    updateData();
+                }
+            }
+            xmlhttp.open("GET",get,true);
+            xmlhttp.send();
+        }
+
+        function promptComment(appname, date){
+            var comment = prompt("請輸入要紀錄的事件", "ex:排名、Bug、APP更新...");
+            if (comment != "") {
+                updateComment(appname,date,comment);
+            };
+        }
+
     </script>
     <style type="text/css">
         .inline-float{
             float: left;
+        }
+        #removeChart{
+            margin: 10px;
+            margin-top: -15px;
+            float: right;
+        }
+        .chart_div_remove{
+            margin-bottom: 30px;
+            position:absolute;
+            left:-9999px;
+            width: 900px;
+            height: 400px;
+        }
+        .chart_div{
+            margin-bottom: 30px;
+            width: 900px;
+            height: 400px;
         }
     </style>
     <body>
@@ -238,22 +334,22 @@
                         <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Android&nbsp<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="android_apps.php">多支APP比較</a></li>
+                                <li class="active"><a href="android_apps.php">多支APP比較</a></li>
                                 <li><a href="android_options.php">單支APP比較</a></li>
                             </ul>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">iOS&nbsp<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="iOS_apps.php">多支APP比較</a></li>
-                                <li class="active"><a href="iOS_options.php">單支APP比較</a></li>
+                                <li><a href="iOS_options.php">單支APP比較</a></li>
                             </ul>
                         </li>
                         <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">下載量波動紀錄&nbsp<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="comment_android.php">Android</a></li>
-                                <li><a href="comment_iOS.php">iOS</a></li>
+                                <li class="active"><a href="comment_iOS.php">iOS</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -261,7 +357,7 @@
             </div>
         </div>
 
-        <div class="option-bar container_12">
+        <div class="container_12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <nav class="title">
@@ -275,9 +371,10 @@
                     <table class="table table-striped">
                         <tr>
                             <td class="grid_2">APP</td>
-                            <td><?php
+                            <td><nav><input type="checkbox" id="allapp" value="all" onchange="chooseAll('app')">全部&nbsp&nbsp</nav>
+                                <?php
                                 foreach ($apps as $key => $app) { 
-                                    echo '<nav class="inline-float"><input type="radio" name="app" value='.$key.' onchange="updateData()">'.$app.'&nbsp&nbsp</nav>';
+                                    echo '<nav class="inline-float"><input type="checkbox" name="app" value='.$key.' onchange="updateData()">'.$app.'&nbsp&nbsp</nav>';
                                 }
                             ?></td>
                         </tr>
@@ -285,7 +382,7 @@
                             <td class="grid_2">資料</td>
                             <td><?php
                                 foreach ($options as $key => $option) {
-                                    echo "<nav class='inline-float'><input type='checkbox' name='option' value=".$key." onchange='updateData()'>".$option."</nav>";
+                                    echo "<nav class='inline-float'><input type='radio' name='option' value=".$key." onchange='updateData()'>".$option."</nav>";
                                 }
                             ?></td>
                         </tr>
@@ -297,17 +394,9 @@
                             <td class="grid_2">結束日期</td>
                             <td><input type="text" id="date_end" name="date_end" value="" onchange="updateData()"></td>
                         </tr>
-                        <tr>
-                            <td class="grid_2">週期</td>
-                            <td>
-                                <input type="radio" name="period" value="daily" onchange="updatePeriod('daily', os)">日&nbsp
-                                <input type="radio" name="period" value="weekly" onchange="updatePeriod('weekly', os)">週&nbsp
-                                <input type="radio" name="period" value="monthly" onchange="updatePeriod('monthly', os)">月&nbsp
-                                <input type="radio" name="period" value="year" onchange="updatePeriod('year', os)">年&nbsp
-                            </td>
-                        </tr>
                     </table>
 
+                    <Button class="btn btn-info" id="removeChart" onclick="removeChart()">隱藏圖表</Button>
                     <form action="exportPng.php" method="POST" target="new">
                         <input type="text" name="data" value="" hidden=true id="exportPng">
                         <input type="submit" name="submit" value="匯出圖片" class="btn btn-warning" id="exportPng">
@@ -317,25 +406,15 @@
                         <input type="submit" name="submit" value="匯出表格" class="btn btn-warning" id="exportCsv">
                     </form>
 
-                    <div id="chart_div" class="container_12" style="width: 900px; height: 500px;"></div><br>
+                    <div id="chart_div" class="container_12 chart_div"></div><br>
 
-                    <table id="data_div" class ="table table-hover container_12">
+                    <table id="data_div" class ="table table-hover" style="width: 900px;">
                         <!-- data from updateTable()-->
                     </table>
                 </div>
                 <div class="panel-footer" style="text-align: center;">@Copyright HyXen</div>
             </div>
         </div>
-
-        <div class="container_12">
             
-        </div>
-
-        
-        
-        <div>
-            
-        </div>
-        
     </body>
 </html>
