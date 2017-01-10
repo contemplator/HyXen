@@ -143,6 +143,7 @@
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200) {
                     // alert(xmlhttp.responseText);
+                    console.log(xmlhttp.responseText);
                     response = JSON.parse(xmlhttp.responseText);
                     document.getElementById("exportPng").value = get;
                     drawVisualization();
@@ -248,24 +249,24 @@
                 <div class="panel-body">
                     <table class="table table-striped">
                         <tr>
-                            <td class="grid_2">OS</td>
-                            <td>
+                            <td class="col-sm-2">OS</td>
+                            <td class="col-sm-10">
                                 <input type="radio" name="option" value="All" onchange="updateData()">All&nbsp
                                 <input type="radio" name="option" value="Android" onchange="updateData()">Android&nbsp
                                 <input type="radio" name="option" value="iOS" onchange="updateData()">iOS&nbsp
                             </td>
                         </tr>
                         <tr>
-                            <td class="grid_2">開始日期</td>
-                            <td><input type="text" id="date_start" name="date_start" value="" onchange="updateData()"></td>
+                            <td class="col-sm-2">開始日期</td>
+                            <td class="col-sm-10"><input type="text" id="date_start" name="date_start" value="" onchange="updateData()"></td>
                         </tr>
                         <tr>
-                            <td class="grid_2">結束日期</td>
-                            <td><input type="text" id="date_end" name="date_end" value="" onchange="updateData()"></td>
+                            <td class="col-sm-2">結束日期</td>
+                            <td class="col-sm-10"><input type="text" id="date_end" name="date_end" value="" onchange="updateData()"></td>
                         </tr>
                         <tr>
-                            <td class="grid_2">週期</td>
-                            <td>
+                            <td class="col-sm-2">週期</td>
+                            <td class="col-sm-10">
                                 <input type="radio" name="period" value="daily" onchange="updatePeriod('daily', os)">日&nbsp
                                 <input type="radio" name="period" value="weekly" onchange="updatePeriod('weekly', os)">週&nbsp
                                 <input type="radio" name="period" value="monthly" onchange="updatePeriod('monthly', os)">月&nbsp

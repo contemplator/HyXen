@@ -22,7 +22,7 @@
     	if($user = $db->fetch_array()){
 			$_SESSION['identity'] = "user";
 			$_SESSION['account'] = $user['account'];
-			header('Location: http://www.idlefox.idv.tw/hyxen/index.php');
+			header('Location: index.php');
 			$error = "已經登入了";
     	}else{
     		$error = "帳號或密碼錯誤";
@@ -32,7 +32,7 @@
     	if($_POST['email'] == "root" && $_POST['password'] == "fourteen"){
     		$_SESSION['identity'] = "admin";
     		$_SESSION['account'] = "root";
-    		header('Location: http://www.idlefox.idv.tw/hyxen/index.php');
+    		header('Location: index.php');
     	}
     }
 ?>
